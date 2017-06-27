@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8" ?>  
+<!DOCTYPE mapper  
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"  
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">  
+<mapper namespace="cn.baisee.mapper.IFabulousMapper">
+	
+	<!-- 
+		根据点赞id和被点赞帖子的id查询  该用户是否点过赞
+	 -->
+	<select id="chazan" resultType="Fabulous" parameterType="Fabulous">
+		select * from fabulous where user_id=#{user_id} and p_id=#{p_id}
+	</select>
+	
+	
+</mapper>
