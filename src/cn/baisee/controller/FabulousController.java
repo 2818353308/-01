@@ -69,6 +69,16 @@ public class FabulousController {
 		return "redirect:/xianshi.htmlx";
 	}
 	
+	/**
+	 * 使用ajax点赞
+	 */
+	@RequestMapping("dianzan_ajax")
+	public void save2(String t_id,HttpServletRequest request){
+		User loginUser=(User) request.getSession().getAttribute("loginUser");
+		System.out.println("用户-============="+loginUser);
+		fabulousService.save(Integer.valueOf(loginUser.getId()),Integer.valueOf(t_id));
+	}
+	
 	
 	/**
 	 * 查询该用户是否点过该帖子

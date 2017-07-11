@@ -58,7 +58,7 @@ public class ShoucangController {
 	 * @param post_id
 	 * @return
 	 */
-	@RequestMapping("user/add_shoucang")
+	/*@RequestMapping("user/add_shoucang")
 	public String add_shoucang(HttpServletRequest request,String post_id){
 		User loginUser=(User) request.getSession().getAttribute("loginUser");
 		Shoucang shoucang=new Shoucang();
@@ -67,6 +67,26 @@ public class ShoucangController {
 		shoucangService.add_shoucang(shoucang);
 		//跳转到
 		return "redirect:/xianshi.htmlx";
+	}*/
+	
+	//ajax添加收藏
+	@RequestMapping("user/add_shoucang_ajax")
+	public void add_shoucang2(HttpServletRequest request,String post_id){
+		System.out.println("进入ajax收藏");
+		User loginUser=(User) request.getSession().getAttribute("loginUser");
+		Shoucang shoucang=new Shoucang();
+		shoucang.setPost_id(Integer.valueOf(post_id));
+		shoucang.setUser_id(loginUser.getId());
+		shoucangService.add_shoucang(shoucang);
+	}
+	
+	/**
+	 * 根据收藏ID删除一个收藏
+	 */
+	@RequestMapping("user/delete_shoucang_ajax")
+	public void delete2(String s_id){
+		System.out.println("删除收藏ID为="+s_id);
+		shoucangService.delete_shoucang(Integer.valueOf(s_id));
 	}
 	
 	/**

@@ -73,7 +73,10 @@
 .red{
 	color: red;
 }
-
+.zan{
+	cursor:pointer;/* 变成小手悬浮; */
+	user-select:none;/* 字体不能选中，有图片的感觉 */
+}
 </style>
 </head>
 
@@ -169,18 +172,6 @@
 </header>	
 	<div class="featured container">
 		<div id="owl-demo" class="owl-carousel">
-			<!-- <div class="item">
-				<div class="zoom-container">
-					<div class="zoom-caption">
-						<span>套路</span>
-						<a href="#">
-							<i class="fa fa-play-circle-o fa-5x" style="color: #fff"></i>
-						</a>
-						<p></p>
-					</div>
-					<img src="images/1.jpg" />
-				</div>
-			</div> -->
 			<div class="item">
 				<div class="zoom-container">
 					<div class="zoom-caption">
@@ -274,35 +265,34 @@
 			<div class="row">
 				<div id="main-content" class="col-md-8">
 				<!-- 帖子 -->
-				<c:forEach var="item" items="${paper.result}">
+				<c:forEach var="item" items="${paper.result}" varStatus="stu">
 					<div class="box">
 						<a href="#"><h2 class="vid-name">${post_type}</h2></a> 
 						<div class="info">
 							<h6>
 							<img id="touxiang" alt="头像未加载出来" src="${pageContext.request.contextPath}/${item.user.head_portrait}">
-							<!-- <script type="text/javascript">
-								function aa(id){
-									layer.open({
-										    type: 1,
-										    skin: 'layui-layer-demo', //样式类名
-										    closeBtn: 1, //不显示关闭按钮
-										    anim: 2,
-										    shadeClose: true, //开启遮罩关闭
-										    content: '<img onclick="aa(${item.user.id})" '+
-										    'id="touxiang" alt="头像未加载出来" src="${pageContext.request.contextPath}/${item.user.head_portrait}">'
-										  });
-								}
-							</script> -->
 							<a href="#">${item.user.uname}</a>&emsp;&emsp;&emsp;&emsp;
 							
 							</h6>
 							<span><i class="fa fa-calendar"></i> ${item.post_time }</span> 
-							<span><i class="fa fa-comment"></i>评论条数(${u:comment_count(item.post_id)})</span>
+							<span><font color="#0000cc"><i class="fa fa-comment"></i>评论条数(${u:comment_count(item.post_id)})</font></span>
 							<span><i class="fa fa-heart"></i>
-								<c:choose>
+								<%-- <c:choose>
 									<c:when test="${item.state==1}"> 已赞 (${u:querytotal(item.post_id)}) </c:when>
 									<c:otherwise><a href="${pageContext.request.contextPath}/user/dianzan.htmlx?t_id=${item.post_id }">未赞(${u:querytotal(item.post_id)})</a></c:otherwise>
+								</c:choose> --%>
+								<!-- 以下修改后为静态点赞不跳转页面 -->
+								<!-- head -->
+								<c:choose>
+									<c:when test="${loginUser.uname!=null}">
+										<c:choose>
+											<c:when  test="${item.state==1}"><font class="zan" >已赞${u:querytotal(item.post_id)}</font></c:when>
+											<c:otherwise><span class="zan" onclick="zan(${stu.index},${u:querytotal(item.post_id)},${item.post_id })" id="zan${stu.index }"><font>未赞</font><span>${u:querytotal(item.post_id)}</span></span></c:otherwise>
+										</c:choose>
+									</c:when>
+									<c:otherwise><a class="zan" href="${pageContext.request.contextPath}/login.jsp">未赞(${u:querytotal(item.post_id)})</a></c:otherwise>
 								</c:choose>
+								<!--	end -->
 							</span>
 							<span>
 								<c:if test="${loginUser.uname!=item.user.uname}">
@@ -312,12 +302,21 @@
 									</c:choose>
 								</c:if>
 							</span>
-							<span>
+							<%-- <span>
 								<c:choose>
 									<c:when test="${item.shoucang_state==1}"><a href="user/delete_shoucang.htmlx?s_id=${item.shoucang_id}">已收藏</a> </c:when>
 									<c:otherwise><a href="user/add_shoucang.htmlx?post_id=${item.post_id}">未收藏</a></c:otherwise>
 								</c:choose>
+							</span> --%>
+							<!-- 以下修改后为静态收藏不跳转页面 -->
+							<!-- 头部 -->
+							<span>
+								<c:choose>
+									<c:when test="${item.shoucang_state==1}"><span class="zan" id="shou${stu.index}" onclick="shou(${stu.index},${item.shoucang_id})">已收藏</span> </c:when>
+									<c:otherwise><span class="zan" id="shou${stu.index}" onclick="shou(${stu.index},${item.post_id})">未收藏</span></c:otherwise>
+								</c:choose>
 							</span>
+							<!-- 尾部 -->
 							<span>
 								<c:if test="${loginUser.uname==item.user.uname}">
 									<a href="${pageContext.request.contextPath}/user/delete.htmlx?post_id=${item.post_id }">删除</a>
@@ -396,7 +395,7 @@
 						<div class="content">
 							<ul class="list-inline">
 								<li>
-									<a href="">
+									<a>
 										<div class="box-facebook">
 											<span class="fa fa-facebook fa-2x icon"></span>
 											<span>5250</span>
@@ -541,60 +540,6 @@
 	
 	<footer>
 		<div class="wrap-footer">
-			<%-- <div class="container">
-				<div class="row">
-					<div class="col-md-4 col-footer footer-1">
-						<div class="footer-heading"><h1><span style="color: #fff;">NEWSPAPER</span></h1></div>
-						<div class="content">
-							<p>Never missed any post published in our site. Subscribe to our daly newsletter now.</p>
-							<strong>Email address:</strong>
-							<form action="#" method="post">
-								<input type="text" name="your-name" value="" size="40" placeholder="Your Email" />
-								<input type="submit" value="SUBSCRIBE" class="btn btn-3" />
-							</form>
-						</div>
-					</div>
-					<div class="col-md-4 col-footer footer-2">
-						<div class="footer-heading"><h4>Tags</h4></div>
-						<div class="content">
-							<a href="#">animals</a>
-							<a href="#">cooking</a>
-							<a href="#">countries</a>
-							<a href="#">city</a>
-							<a href="#">children</a>
-							<a href="#">home</a>
-							<a href="#">likes</a>
-							<a href="#">photo</a>
-							<a href="#">link</a>
-							<a href="#">law</a>
-							<a href="#">shopping</a>
-							<a href="#">skate</a>
-							<a href="#">scholl</a>
-							<a href="#">video</a>
-							<a href="#">travel</a>
-							<a href="#">images</a>
-							<a href="#">love</a>
-							<a href="#">lists</a>
-							<a href="#">makeup</a>
-							<a href="#">media</a>
-							<a href="#">password</a>
-							<a href="#">pagination</a>
-							<a href="#">wildlife</a>
-						</div>
-					</div>
-					<div class="col-md-4 col-footer footer-3">
-						<div class="footer-heading"><h4>Link List</h4></div>
-						<div class="content">
-							<ul>
-								<li><a href="#">MOST VISITED COUNTRIES</a></li>
-								<li><a href="#">5 PLACES THAT MAKE A GREAT HOLIDAY</a></li>
-								<li><a href="#">PEBBLE TIME STEEL IS ON TRACK TO SHIP IN JULY</a></li>
-								<li><a href="#">STARTUP COMPANY’S CO-FOUNDER TALKS ON HIS NEW PRODUCT</a></li>
-							</ul>
-						</div>
-					</div>
-				</div>
-			</div> --%>
 		</div>
 		<div class="copy-right">
 			<p>Copyright &copy; 2017.Company name All rights reserved.<a target="_blank" href="http://www.cssmoban.com/">就是不正经</a></p>
@@ -603,11 +548,35 @@
 			<input type="hidden" name="currentPage" id="currentPage" />
 		</form>
 	</footer>
-	<!-- 用户分页 -->
+	
 <script type="text/javascript">
+// 	<!-- 用户分页 -->
 	function query(page){
 		$("#currentPage").val(page);
 		$("#query")[0].submit();
+	}
+	function shou(index,post_id){
+		if($("#shou"+index).text()=="未收藏"){
+			//使用ajax把未收藏变成以收藏
+			$("#shou"+index).text("已收藏")
+			$.post("${pageContext.request.contextPath}/user/add_shoucang_ajax.htmlx?post_id="+post_id,function(data){});
+			//alert("未收藏")
+		}else{
+			//使用ajax把已收藏变成未收藏
+			$.post("${pageContext.request.contextPath}/user/delete_shoucang_ajax.htmlx?s_id="+post_id,function(data){});
+			$("#shou"+index).text("未收藏")
+		}
+	}
+	//静态点赞不跳转页面  ajax提交改变
+	function zan(index,num,t_id){
+		if($("#zan"+index+" font").text()=="未赞"){
+			$.post("${pageContext.request.contextPath}/dianzan_ajax.htmlx?t_id="+t_id,function(data){});
+			$("#zan"+index+" font").text("已赞");
+			$("#zan"+index+" span").text(num+1);
+		}/* else{
+			$("#zan"+index+" i").text("未赞")
+			$("#zan"+index+" span").text(num-1);
+		} */
 	}
 </script>
 	<!-- JS -->
@@ -657,7 +626,7 @@ i=0;
   $(function(){
 	   layer.msg('玩命卖萌中', function(){
 			//关闭后的操作
-		}); 
+		}); 0
   })
   
 </script>

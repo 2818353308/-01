@@ -20,7 +20,6 @@ public class ContextUtils {
 				((ServletRequestAttributes) 
 				RequestContextHolder.getRequestAttributes())
 				.getRequest();
-
 		return WebApplicationContextUtils.getWebApplicationContext(request.getSession().getServletContext());
 	}
 

@@ -15,7 +15,9 @@
      	根据用户ID查询用户信息
     </description>
     <name>quetyUser</name>
+    <!-- 自定义el的类 -->
     <function-class>cn.baisee.tags.Usereltag</function-class>
+    <!-- 返回值 方法名 参数 -->
     <function-signature>cn.baisee.entity.User quetyUser(java.lang.Integer)</function-signature>
     <example>
     	${u:quetyUser(id)}
